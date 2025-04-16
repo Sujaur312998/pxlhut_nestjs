@@ -9,12 +9,17 @@ import {
 import { UserService } from 'src/user/user.service';
 import { CreateUserDto } from './dto/create.dto';
 import * as bcrypt from 'bcrypt';
+import { PayloadDto } from './dto/payload.dto';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
   private readonly logger = new Logger(AuthService.name);
 
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private jwtService: JwtService,
+  ) {}
 
   async register(createUserDto: CreateUserDto) {
     const { email, password } = createUserDto;
@@ -60,5 +65,20 @@ export class AuthService {
         'Unexpected error occurred during registration',
       );
     }
+  }
+
+  async validateUser(email: string, password: string) {
+    const user = await this.userService.findByEmail(email);
+    if (user && (await bcrypt.compare(password, user.password))) {
+      return user;
+    }
+    return null;
+  }
+
+  async login(payload: PayloadDto) {
+    const accessToken = this.jwtService.sign(payload, { expiresIn: '15m' });
+    const refreshToken = this.jwtService.sign(payload, { expiresIn: '7d' });
+    await this.userService.updateRefreshToken(payload.id, refreshToken);
+    return { accessToken, refreshToken };
   }
 }

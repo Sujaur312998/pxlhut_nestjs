@@ -1,21 +1,52 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { User, Prisma } from '@prisma/client';
 
 @Injectable()
 export class UserService {
   constructor(private prisma: PrismaService) {}
 
-  async createUser(data: Prisma.UserCreateInput): Promise<User> {
-    return this.prisma.user.create({ data });
+  async createUser(data: {
+    email: string;
+    password: string;
+  }): Promise<{ id: string; email: string; role: string }> {
+    return this.prisma.user.create({
+      data,
+      select: {
+        id: true,
+        email: true,
+        role: true,
+      },
+    });
   }
 
-  async findByEmail(email: string): Promise<User | null> {
-    return this.prisma.user.findUnique({ where: { email } });
+  async findByEmail(email: string): Promise<{
+    id: string;
+    email: string;
+    role: string;
+    password: string;
+  } | null> {
+    return this.prisma.user.findUnique({
+      where: { email },
+      select: {
+        id: true,
+        email: true,
+        role: true,
+        password: true,
+      },
+    });
   }
 
-  async findById(id: string): Promise<User | null> {
-    return this.prisma.user.findUnique({ where: { id } });
+  async findById(
+    id: string,
+  ): Promise<{ id: string; email: string; role: string } | null> {
+    return this.prisma.user.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        email: true,
+        role: true,
+      },
+    });
   }
 
   async updateRefreshToken(
