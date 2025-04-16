@@ -11,4 +11,9 @@ export class PayloadDto {
   @IsNotEmpty()
   @Type(() => String)
   email: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @Type(() => String)
+  role: string;
 }

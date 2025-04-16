@@ -81,4 +81,18 @@ export class AuthService {
     await this.userService.updateRefreshToken(payload.id, refreshToken);
     return { accessToken, refreshToken };
   }
+
+  async validateToken(payload: PayloadDto) {
+    const user = await this.userService.findById(payload.id);
+    if (!user) return null;
+    return {
+      id: user.id,
+      email: user.email,
+      role: user.role,
+    };
+  }
+
+  async userDetails(id: string) {
+    return await this.userService.findById(id);
+  }
 }
