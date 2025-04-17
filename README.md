@@ -40,4 +40,35 @@ details) (protected route using passport jwt strategy) [in 5 min maximum 2 reque
     "currency":"usd"
 }
   ```
+  - after complete checkout process stripe will call automatically webhook REST API and save payment data to pg
+
+
+## Installation
+
+1. Clone the repository:
+```bash
+git clone https://github.com/Sujaur312998/pxlhut_nestjs.git
+cd pxlhut_nestjs
+npm install
+```
+
+2. Configure Environment (.env)
+
+```bash
+DATABASE_URL=postgresql://pxlhut:pxlhut@nestjs_pxlhut:5432/pxlhut
+JWT_SECRET=********
+STRIPE_SECRET_KEY=********
+STRIPE_WEBHOOK_SECRET=****
+```
+
+3. Running the Application
+
+Generate Prisma Client
+```bash 
+npx prisma generate
+```
+RUN 
+```bash 
+npm run start:dev
+```
 
