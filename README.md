@@ -28,7 +28,7 @@ Express/NestJS, Passport.js, JWT, and a payment gateway.
     "password":"string"
 }
   ```
-○ GET /auth/me → Fetch logged-in user details (protected route using passport jwt strategy) [in 1 sec maximum 15 request]
+○ GET /auth/me → Fetch logged-in only user details- role based authentication (protected route using passport jwt strategy) [in 1 sec maximum 15 request]
     - Bearer Token(accessToken)
 ○ POST /payments/checkout → Simulate a payment (store transaction
 details) (protected route using passport jwt strategy) [in 5 min maximum 2 request]

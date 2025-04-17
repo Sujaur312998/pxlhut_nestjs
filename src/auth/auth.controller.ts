@@ -5,6 +5,9 @@ import { LocalAuthGuard } from '../lib/guard/local-auth.guard';
 import { User } from '../lib/decorators/user.decorator';
 import { JwtAuthGuard } from '../lib/guard/jwt-auth.guard';
 import { Throttle } from '@nestjs/throttler';
+import { RolesGuard } from 'src/lib/guard/roles.guard';
+import { Roles } from 'src/lib/decorators/roles.decorator';
+import { Role } from '@prisma/client';
 
 @Controller('auth')
 export class AuthController {
@@ -24,7 +27,8 @@ export class AuthController {
 
   @Throttle({ default: { limit: 15, ttl: 1000 } })
   @Get('me')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.user)
   async getProfile(@User() user: { id: string; email: string; role: string }) {
     return await this.authService.userDetails(user.id);
   }
