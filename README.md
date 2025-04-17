@@ -55,7 +55,15 @@ npm install
 2. Configure Environment (.env)
 
 ```bash
-DATABASE_URL=postgresql://pxlhut:pxlhut@nestjs_pxlhut:5432/pxlhut
+DATABASE_URL=************
+JWT_SECRET=********
+STRIPE_SECRET_KEY=********
+STRIPE_WEBHOOK_SECRET=****
+```
+
+if you have docker env:
+```bash
+DATABASE_URL=postgresql://pxlhut:pxlhut@nestjs_pxlhut_db:5432/pxlhut
 JWT_SECRET=********
 STRIPE_SECRET_KEY=********
 STRIPE_WEBHOOK_SECRET=****
@@ -66,9 +74,15 @@ STRIPE_WEBHOOK_SECRET=****
 Generate Prisma Client
 ```bash 
 npx prisma generate
+npx prisma db push
 ```
 RUN 
 ```bash 
 npm run start:dev
+```
+
+For docker:
+```bash
+docker compose up
 ```
 
