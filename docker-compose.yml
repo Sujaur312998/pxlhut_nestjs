@@ -1,0 +1,39 @@
+version: '3.9'
+
+services:
+  nestjs_pxlhut:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - NODE_ENV=development
+    volumes:
+      - ./src:/usr/src/app/src
+      - ./package.json:/usr/src/app/package.json
+      - ./package-lock.json:/usr/src/app/package-lock.json
+      - ./prisma:/usr/src/app/prisma
+    depends_on:
+      - nestjs_pxlhut_db
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pxlhut -h nestjs_pxlhut"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  nestjs_pxlhut_db:
+    image: postgres:latest
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=pxlhut
+      - POSTGRES_PASSWORD=pxlhut
+      - POSTGRES_DB=pxlhut
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:

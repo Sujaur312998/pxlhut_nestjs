@@ -12,11 +12,13 @@ import { PaymentsService } from './payments.service';
 import { Request, Response } from 'express';
 import { JwtAuthGuard } from 'src/lib/guard/jwt-auth.guard';
 import { User } from 'src/lib/decorators/user.decorator';
+import { Throttle } from '@nestjs/throttler';
 
 @Controller('payments')
 export class PaymentsController {
   constructor(private readonly paymentService: PaymentsService) {}
 
+  @Throttle({ default: { limit: 2, ttl: 300000 } })
   @Post('checkout')
   @UseGuards(JwtAuthGuard)
   async checkout(

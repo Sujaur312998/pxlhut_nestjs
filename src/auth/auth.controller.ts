@@ -4,7 +4,7 @@ import { CreateUserDto } from './dto/create.dto';
 import { LocalAuthGuard } from '../lib/guard/local-auth.guard';
 import { User } from '../lib/decorators/user.decorator';
 import { JwtAuthGuard } from '../lib/guard/jwt-auth.guard';
-// import { Request } from 'express';
+import { Throttle } from '@nestjs/throttler';
 
 @Controller('auth')
 export class AuthController {
@@ -15,12 +15,14 @@ export class AuthController {
     return await this.authService.register(createUserDto);
   }
 
+  @Throttle({ default: { limit: 3, ttl: 300000 } })
   @Post('login')
   @UseGuards(LocalAuthGuard)
   async login(@User() user: { id: string; email: string; role: string }) {
     return this.authService.login(user);
   }
 
+  @Throttle({ default: { limit: 15, ttl: 1000 } })
   @Get('me')
   @UseGuards(JwtAuthGuard)
   async getProfile(@User() user: { id: string; email: string; role: string }) {
